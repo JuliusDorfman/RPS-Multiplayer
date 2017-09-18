@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        RPS - Test Your Telepathic Strength
+    </title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src='./assets/javascript/script.js'></script>
+    <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
+    <script>
+    var config = {
+        apiKey: "AIzaSyDAuqf7v4i9eJWdF3Q38nlcon6JA5EDCps",
+        authDomain: "rps-multiplayer-f0ba4.firebaseapp.com",
+        databaseURL: "https://rps-multiplayer-f0ba4.firebaseio.com",
+        projectId: "rps-multiplayer-f0ba4",
+        storageBucket: "",
+        messagingSenderId: "911210346026"
+    };
+    firebase.initializeApp(config);
+    </script>
+</head>
+
+<body>
+    <h2 class="text-center">The Rock, Paper Stacks, or Scissorhands!</h2>
+    <h3 class="text-center">Time Left: <span class="timer"></span></h3>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <button class="start center-block">Click to Start Round</button>
+            </div>
+        </div>
+    </div>
+    <h2 class="text-center">Method of Attack!</h2>
+    <div class="container" id="choices-selection">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-xs-6 text-center">
+                <div id="player-one"></div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-xs-6 text-center">
+                <div id="player-two"></div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
