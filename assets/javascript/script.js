@@ -36,8 +36,17 @@ $(document).ready(function() {
             }, 1000)
             $('#player-one').empty();
             $('#player-two').empty();
+            compareValue();
+
         }
     };
+
+    // chatbox will push to firebase
+    // chatbox will save to session storage
+    var playerChat = {
+        chatBox: []
+    };
+
 
     $(".start").on("click", function() {
         event.preventDefault();
@@ -78,71 +87,121 @@ $(document).ready(function() {
         for (i = 0; i < game.playerOne.imageChoices.length; i++) {
             var images = $('<img>')
                 .attr("src", game.playerOne.imageChoices[i])
-                .attr("value", i)
+                .attr("value", "1p" + i)
                 .attr("active", true)
                 .appendTo($("#player-one"))
         }
+
         for (i = 0; i < game.playerTwo.imageChoices.length; i++) {
             $('<img>')
                 .attr("src", game.playerTwo.imageChoices[i])
-                .attr("value", i)
+                .attr("value", "2p" + i)
                 .attr("active", true)
                 .appendTo($("#player-two"))
         }
     };
 
-    function compareValue() {};
+    function compareValue() {
 
-    function scoreUpdate() {};
+        // var pOneChoice = database.ref("userOneChoice")
+        // var pTwoChoice = database.ref("userTwoChoice")
+        // pOneChoice.once("value")
+        //     .then(function(snapshot) {
+        //         var key = snapshot.key; // "ada"
+        //         var childKey = snapshot.child("userOneChoice").key; // "last"
+        //         console.log('', pOneChoice);
+        //     });
+
+        // var rootRef = firebase.database().ref();
+        // rootRef.once("value")
+        //     .then(function(snapshot) {
+        //         var key = snapshot.key; // null
+        //         var childKey = snapshot.child("users/ada").key; // "ada"
+        //     });
+    }
+
+  
+    function scoreUpdate() {
+
+    };
 
 
     $("#player-one").on("click", "img", function(event) {
         event.preventDefault();
         rps = $(this).attr("value")
-        if ($(this).attr("active", true) == true) {
-            if (rps == "0") {
-                database.ref().update({
-                    userOneChoice: rps
-                })
-            }
-            if (rps == "1") {
-                database.ref().update({
-                    userOneChoice: rps
-                })
-            }
-            if (rps == "2") {
-                database.ref().update({
-                    userOneChoice: rps
-                })
-            }
+        // var choiceMade = $(this).attr("active", false)
+        // if ($(this).attr("active", true) == true) {
+        if (rps == "1p0") {
+            database.ref().update({
+                userOneChoice: rps
+            })
         }
-        $(this).attr("active", false);
+        if (rps == "1p1") {
+            database.ref().update({
+                userOneChoice: rps
+            })
+        }
+        if (rps == "1p2") {
+            database.ref().update({
+                userOneChoice: rps
+            })
+        }
+        // }
+        console.log('', rps);
     });
 
 
     $("#player-two").on("click", "img", function(event) {
         event.preventDefault();
         rps = $(this).attr("value")
-        if ($(this).attr("active", true) == true) {
-            if (rps == "0") {
-                database.ref().update({
-                    userTwoChoice: rps
-                })
-            }
-            if (rps == "1") {
-                database.ref().update({
-                    userTwoChoice: rps
-                })
-            }
-            if (rps == "2") {
-                database.ref().update({
-                    userTwoChoice: rps
-                })
-            }
+        // choiceMade = $(this).attr("active", false)
+        console.log('', $(this).attr("active"))
+        // if ($(this).attr("active", true) == true) {
+        if (rps == "2p0") {
+            database.ref().update({
+                userTwoChoice: rps
+            })
         }
-        $(this).attr("active", false);
-    })
+        if (rps == "2p1") {
+            database.ref().update({
+                userTwoChoice: rps
+            })
+        }
+        if (rps == "2p2") {
+            database.ref().update({
+                userTwoChoice: rps
+            })
+        }
+        // }
+        console.log('', rps);
+    });
+
+
+    $("#submit-chat").on("click", function() {
+        event.preventDefault();
+        var playerInput = $("#chat-input").val().trim()
+        $("<div>")
+            .append(playerInput + "\xa0\xa0\xa0\xa0\xa0\xa0\xa0")
+            .append(formatTimeOfDay($.now()))
+            .prependTo("#chat-box")
+        playerInput = $("#chat-input").val('')
+    });
+
+    function formatTimeOfDay(millisSinceEpoch) {
+        var secondsSinceEpoch = (millisSinceEpoch / 1000) | 0;
+        var secondsInDay = ((secondsSinceEpoch % 86400) + 86400) % 86400;
+        var seconds = secondsInDay % 60;
+        var minutes = ((secondsInDay / 60) | 0) % 60;
+        var hours = (secondsInDay / 3600) | 0;
+        return hours + (minutes < 10 ? ":0" : ":") +
+            minutes + (seconds < 10 ? ":0" : ":") +
+            seconds;
+    };
+
 });
+
+
+
 
 // ### Instructions
 

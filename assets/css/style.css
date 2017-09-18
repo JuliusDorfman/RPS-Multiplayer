@@ -8,3 +8,8 @@ img {
 	min-width: 200px;
 	min-height: 200px;
 }
+
+#chat-box {
+	border: solid 1px lightblue;
+	margin: 40px;
+}
