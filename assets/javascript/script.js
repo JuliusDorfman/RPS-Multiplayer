@@ -1,6 +1,6 @@
 $(document).ready(function() {
     var timer;
-
+    var database = firebase.database();
     var game = {
         rounds: 3,
 
@@ -40,7 +40,7 @@ $(document).ready(function() {
     };
 
     $(".start").on("click", function() {
-    	event.preventDefault();
+        event.preventDefault();
         console.log('', "Start Round");
         $(".start").hide();
         resetTimer(timer);
@@ -48,9 +48,8 @@ $(document).ready(function() {
     });
 
     $("#choices-selection").on("click", "img", function() {
-    	event.preventDefault();
+        event.preventDefault();
         var userChoice = $(this).attr('value')
-        console.log('', userChoice);
     });
 
     function roundTimer(timer) {
@@ -80,61 +79,69 @@ $(document).ready(function() {
             var images = $('<img>')
                 .attr("src", game.playerOne.imageChoices[i])
                 .attr("value", i)
+                .attr("active", true)
                 .appendTo($("#player-one"))
         }
         for (i = 0; i < game.playerTwo.imageChoices.length; i++) {
             $('<img>')
                 .attr("src", game.playerTwo.imageChoices[i])
                 .attr("value", i)
+                .attr("active", true)
                 .appendTo($("#player-two"))
         }
     };
 
-    function compareValue() {
+    function compareValue() {};
 
-    };
+    function scoreUpdate() {};
+
 
     $("#player-one").on("click", "img", function(event) {
         event.preventDefault();
-        var database = firebase.database();
         rps = $(this).attr("value")
-        if (rps == "0") {
-            database.ref().update({
-                userOneChoice: rps
-            })
+        if ($(this).attr("active", true) == true) {
+            if (rps == "0") {
+                database.ref().update({
+                    userOneChoice: rps
+                })
+            }
+            if (rps == "1") {
+                database.ref().update({
+                    userOneChoice: rps
+                })
+            }
+            if (rps == "2") {
+                database.ref().update({
+                    userOneChoice: rps
+                })
+            }
         }
-        if (rps == "1") {
-            database.ref().update({
-                userOneChoice: rps
-            })
-        }
-        if (rps == "2") {
-            database.ref().update({
-                userOneChoice: rps
-            })
-        }
+        $(this).attr("active", false);
     });
+
 
     $("#player-two").on("click", "img", function(event) {
         event.preventDefault();
-        var database = firebase.database();
         rps = $(this).attr("value")
-        if (rps == "0") {
-            database.ref().update({
-                userTwoChoice: rps
-            })
+        if ($(this).attr("active", true) == true) {
+            if (rps == "0") {
+                database.ref().update({
+                    userTwoChoice: rps
+                })
+            }
+            if (rps == "1") {
+                database.ref().update({
+                    userTwoChoice: rps
+                })
+            }
+            if (rps == "2") {
+                database.ref().update({
+                    userTwoChoice: rps
+                })
+            }
         }
-        if (rps == "1") {
-            database.ref().update({
-                userTwoChoice: rps
-            })
-        }
-        if (rps == "2") {
-            database.ref().update({
-                userTwoChoice: rps
-            })
-        }
-    });
+        $(this).attr("active", false);
+    })
 });
 
 // ### Instructions
