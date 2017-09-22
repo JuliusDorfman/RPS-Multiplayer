@@ -13,3 +13,7 @@ img {
 	border: solid 1px lightblue;
 	margin: 40px;
 }
+
+body {
+	background-color: lightblue
+}

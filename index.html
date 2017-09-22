@@ -7,20 +7,9 @@
     </title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="./assets/css/style.css">
+    <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" src='./assets/javascript/script.js'></script>
-    <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
-    <script>
-    var config = {
-        apiKey: "AIzaSyDAuqf7v4i9eJWdF3Q38nlcon6JA5EDCps",
-        authDomain: "rps-multiplayer-f0ba4.firebaseapp.com",
-        databaseURL: "https://rps-multiplayer-f0ba4.firebaseio.com",
-        projectId: "rps-multiplayer-f0ba4",
-        storageBucket: "rps-multiplayer-f0ba4.appspot.com",
-        messagingSenderId: "911210346026"
-    };
-    firebase.initializeApp(config);
-    </script>
 </head>
 
 <body>
@@ -35,14 +24,20 @@
     </div>
     <h2 class="text-center">Method of Attack!</h2>
     <h4 class="text-center">(Only your very last click will be counted)</h4>
-    <h4 class="text-center">(best of 5)</h4>
+    <h4 class="text-center">(First to 3)</h4>
     <div class="container" id="choices-selection">
         <div class="row">
             <div class="col-lg-6 col-md-6 col-xs-6 text-center">
+                <input class="p1-login"></input>
+                <button class="p1-submit">Login</button>
+                <div class="p1-name"></div>
                 <h3>Wins: <span class="player-one-wins"></span></h3>
                 <div id="player-one"></div>
             </div>
             <div class="col-lg-6 col-md-6 col-xs-6 text-center">
+                <input class="p2-login"></input>
+                <button class="p2-submit">Login</button>
+                <div class="p2-name"></div>
                 <h3>Wins: <span class="player-two-wins"></span></h3>
                 <div id="player-two"></div>
             </div>
@@ -50,11 +45,11 @@
     </div>
     <div class="container">
         <div class="row">
-            <div class="col-md-4">
-                <input id="chat-input"></input>
-                <input type="submit" id="submit-chat"></input>
+            <div class="col-md-12 text-center">
+                <input id="chat-input" class="text-center"></input>
+                <input type="submit" class="text-center" id="submit-chat"></input>
+                <div id="chat-box" class="text-left"></div>
             </div>
-            <div class="col-md-8" id="chat-box"></div>
         </div>
     </div>
 </body>
