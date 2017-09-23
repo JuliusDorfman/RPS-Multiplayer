@@ -1,7 +1,8 @@
 $(document).ready(function() {
 
-    sessionStorage.clear()
 
+    // Clear session storage upon page open. Initialize and clear preexisting firebase data.
+    sessionStorage.clear()
 
 
     var config = {
@@ -12,17 +13,27 @@ $(document).ready(function() {
         storageBucket: "rps-multiplayer-f0ba4.appspot.com",
         messagingSenderId: "911210346026"
     };
+
     firebase.initializeApp(config);
     var database = firebase.database();
 
-    database.ref("/chat").update({
-        history: ""
-    })
+    function prepFirebase() {
+        database.ref("/chat").remove();
+        database.ref("/user1").remove();
+        database.ref("/user2").remove();
+        database.ref("/userOneChoice").remove();
+        database.ref("/userTwoChoice").remove();
+    }
 
+
+
+    // Set variables including timer(round clock)/game(players and different game screens)
     var timer;
+    var winCounterOne = 0;
+    var winCounterTwo = 0;
+
     var game = {
         rounds: 3,
-
         playerOne: {
             wins: "",
             losses: "",
@@ -36,9 +47,11 @@ $(document).ready(function() {
         },
 
         battleScreen: function(timer) {
+            prepFirebase();
             console.log('', "battleScreen");
             resetTimer();
             generatePlayers();
+
         },
 
         restScreen: function(timer) {
@@ -55,11 +68,11 @@ $(document).ready(function() {
             }, 1000)
             $('#player-one').empty();
             $('#player-two').empty();
-            compareValue();
-
+            getValue();
         }
     };
 
+    // Create chat box
     var playerChat = {
         chatBox: []
     };
@@ -118,24 +131,148 @@ $(document).ready(function() {
         }
     };
 
-    function compareValue() {
+    function getValue() {
         var p1Choice = firebase.database().ref("userOneChoice");
-        p1Choice.once("value", function(snapshot) {
-            var p1Choice = snapshot.val();
-            console.log('PlayerOneChoice', p1Choice);
+        p1Choice.on("value", function(snapshot) {
+            p1ChoiceValue = snapshot.val();
+            console.log('PlayerOneChoice', p1ChoiceValue);
         })
 
         var p2Choice = firebase.database().ref("userTwoChoice");
-        p2Choice.once("value", function(snapshot) {
-            var p2Choice = snapshot.val();
-            console.log('PlayerTwoChoice', p2Choice);
+        p2Choice.on("value", function(snapshot) {
+            p2ChoiceValue = snapshot.val();
+            console.log('PlayerTwoChoice', p2ChoiceValue);
         })
-
+        compareValue(p1ChoiceValue, p2ChoiceValue);
     }
 
-    function scoreUpdate() {
+    function compareValue(p1ChoiceValue, p2ChoiceValue) {
+        if (p1ChoiceValue == "1p0") {
+            if (p2ChoiceValue == "2p0") {
+                $("<div>")
+                    .addClass("verdict")
+                    .append("It's a Tie!")
+                    .prependTo("#chat-box")
+                return
+            }
+        }
+        if (p1ChoiceValue == "1p0") {
+            if (p2ChoiceValue == "2p1") {
+                $("<div>")
+                    .addClass("verdict")
+                    .append("Player One Wins!")
+                    .prependTo("#chat-box")
+                var winner = "p1"
+                scoreUpdate(winner, timer);
+            }
+        }
 
-    };
+        if (p1ChoiceValue == "1p0") {
+            if (p2ChoiceValue == "2p2") {
+                $("<div>")
+                    .addClass("verdict")
+                    .append("Player One Wins!")
+                    .prependTo("#chat-box")
+                var winner = "p1"
+                scoreUpdate(winner, timer);
+            }
+        }
+
+        if (p1ChoiceValue == "1p1") {
+            if (p2ChoiceValue == "2p0") {
+                $("<div>")
+                    .addClass("verdict")
+                    .append("Player Two Wins!")
+                    .prependTo("#chat-box")
+                var winner = "p2"
+                scoreUpdate(winner, timer);
+            }
+        }
+
+        if (p1ChoiceValue == "1p1") {
+            if (p2ChoiceValue == "2p1") {
+                $("<div>")
+                    .addClass("verdict")
+                    .append("It's a Tie!")
+                    .prependTo("#chat-box")
+                return
+            }
+        }
+
+        if (p1ChoiceValue == "1p1") {
+            if (p2ChoiceValue == "2p2") {
+                $("<div>")
+                    .addClass("verdict")
+                    .append("Player Two Wins!")
+                    .prependTo("#chat-box")
+                var winner = "p2"
+                scoreUpdate(winner, timer);
+            }
+        }
+
+        if (p1ChoiceValue == "1p2") {
+            if (p2ChoiceValue == "2p0") {
+                $("<div>")
+                    .addClass("verdict")
+                    .append("Player Two Wins!")
+                    .prependTo("#chat-box")
+                var winner = "p2"
+                scoreUpdate(winner, timer);
+            }
+        }
+
+        if (p1ChoiceValue == "1p2") {
+            if (p2ChoiceValue == "2p1") {
+                $("<div>")
+                    .addClass("verdict")
+                    .append("Player One Wins!")
+                    .prependTo("#chat-box")
+                var winner = "p1"
+                scoreUpdate(winner, timer);
+            }
+        }
+
+        if (p1ChoiceValue == "1p2") {
+            if (p2ChoiceValue == "2p2") {
+                $("<div>")
+                    .addClass("verdict")
+                    .append("It's a Tie!")
+                    .prependTo("#chat-box")
+                return
+            }
+        }
+    }
+
+    function scoreUpdate(winner, timer) {
+
+        if (winner == "p1") {
+            winCounterOne++;
+            game.playerOne.wins = winCounterOne;
+            console.log('winCounterOne', winCounterOne);
+            console.log('', game.playerOne.wins);
+            $(".player-one-wins").html(winCounterOne);
+            if (winCounterOne == 3) {
+                $(".player-one-wins").html("PLAYER ONE WINS");
+                $("#chat-box").html("PLAYER ONE WINS");
+                clearInterval(timer)
+            }
+        }
+
+        if (winner == "p2") {
+            winCounterTwo++;
+            game.playerTwo.wins = winCounterTwo;
+            console.log('winCounterTwo', winCounterTwo);
+            console.log('', game.playerTwo.wins);
+            $(".player-two-wins").html(winCounterTwo);
+            if (winCounterTwo == 3) {
+                $(".player-two-wins").html("PLAYER TWO WINS");
+                $("#chat-box").html("PLAYER TWO WINS");
+                clearInterval(timer)
+            }
+        }
+    }
+
+
 
     // Player Choices
 
@@ -289,172 +426,3 @@ $(document).ready(function() {
 //   * Styling and theme are completely up to you. Get Creative!
 
 //   * Deploy your assignment to Github Pages.
-
-
-// function player (name, wins, losses, choice){ 
-//   this.name = name;
-//   this.wins = wins;
-//   this.losses = losses;
-//   this.choice = choice;
-//   this.fbKey = "";
-
-//   this.changeName = function(name){
-//     this.name = name;
-//   }
-//   this.win = function(){
-//     this.wins = this.wins++;
-//   }
-//   this.lose = function(){
-//     this.losses = this.losses++;
-//   }
-//   this.changeChoice = function(choice){
-//     this.choice = choice;
-//     console.log("the choice is "+choice);
-//   }
-//   this.getName = function(){
-//     return this.name;
-//   }
-// }
-
-// var game = {
-//   player1:"",
-//   player2:"",
-
-//   setplayer1: function(name){
-//      this.player1 = new player(name, 0, 0, ""); 
-//       var ref = firebase.database().ref("/players");   
-
-//       var p1Key = ref.push({
-//         name: this.player1.name,
-//         wins: this.player1.wins,
-//         losses:this.player1.losses,
-//         choice: this.player1.choice
-//       }).key;
-
-//       this.player1.fbKey = p1Key;
-//      return this.player1;
-//   },
-
-//   setplayer2: function(name){
-//      this.player2 = new player(name, 0, 0, ""); 
-//      var ref = firebase.database().ref("/players");
-
-//      var p2Key = ref.push({
-//         name: this.player2.name,
-//         wins: this.player2.wins,
-//         losses:this.player2.losses,
-//         choice: this.player2.choice
-//       }).key;
-
-//       this.player2.fbKey = p2Key;
-//      return this.player2;
-//   },
-//   sendChatMessage: function(player){
-//     // var newRef = myDataRef.push(...);
-//     // var newID = newRef.name();
-//       var ref = firebase.database().ref("/chat");
-//       var messageField = $('#chat-message').val().trim();
-//       var playerName = player.name;
-
-//       var chatKey = ref.push({
-//         name: playerName,
-//         message: messageField,
-//         dateAdded: firebase.database.ServerValue.TIMESTAMP
-//       }).key;
-
-//       //get the message just pushed to firebase and pass to addChatMessage
-//       ref.on("child-added", function(snapshot) {
-//         var message = snapshot.val();
-//         addChatMessage(message.name, message.message)
-//       });
-//   }  
-// }
-
-// function addChatMessage(name, message){
-//   $("#chatbox").append("<p>" + name + ": " + message +" </p>");
-// }
-
-
-// $(document).ready(function(){
-//   //THE ON CLICK FUNCTIONS GO HERE 
-//   $("#addPlayer").on("click", function(event){
-//     event.preventDefault();
-
-
-//     var name = $("#player-name").val().trim();
-//     var p1  = game.setplayer1(name);
-//     //lets push this guy to the db
-
-
-//     $("#p1").empty();
-//     $("#p1").prepend(p1.name);
-//     //add the rest of the tuff like the rock paper scisciors. 
-//     var rockDiv = $("<h2>" + "Rock" + "<h2>");
-//     var paperDiv = $("<h2>" + "Paper" + "<h2>");
-//     var scissorDiv = $("<h2>" + "Scissor" + "<h2>");
-//     // not sure how to set the on click to not run during in line code. 
-//     $("#p1").append(rockDiv).on("click", p1.changeChoice("rock"));
-//     $("#p1").append(paperDiv).on("click", p1.changeChoice("paper"));
-//     $("#p1").append(scissorDiv).on("click", p1.changeChoice("scissor"));
-//   });
-
-//   $("#addMessage").on("click", function(){
-//     game.sendChatMessage(game.player1);
-//   });
-// });
-
-
-
-// <!DOCTYPE html>
-// <html lang="en">
-//   <head>
-//     <meta charset="utf-8">
-//     <title>Rock Paper Scissors</title>
-
-//     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">  
-//     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-//     <link rel="stylesheet" type="text/css" href="./assets/css/styles.css">
-
-//   </head>
-
-//   <body >
-//   <header>
-//     <h1>Rock Paper Scissors</h1>
-//   </header>
-//   <div class="container">
-
-//     <div class= "row" id= "playerDisplay">
-//       <form class = "col-sm-12">
-//         <label for="player-name-input">Enter your name</label>
-//         <input type="text" id="player-name" placeholder="Name" name=""></input>
-//         <input id="addPlayer" type="button" value="Start" >
-//       </form>
-//     </div>
-
-//     <div class="row">
-//       <div id="p1" class="col-md-3 col-sm-3 col-xs-3 box">
-//         <h2>Waiting for player 1</h2>
-//       </div>
-
-//       <div id="p0" class="col-md-3 col-sm-3 col-xs-3 box"></div>
-
-//       <div id="p2" class="col-md-3 col-sm-3 col-xs-3 box">
-//         <h2>Waiting for player 2</h2>
-//       </div>
-//     </div>
-
-//     <div class="row chat">
-//         <!-- <div class="col-md-9 col-sm-9"> -->
-//             <div id="chatbox" class="col-md-9 col-sm-9"></div>
-//         </div class="col-md-9 col-sm-9">
-//             <input type="text" id="chat-message" placeholder="type message here" name=""></input>
-//           <input id= "addMessage" type= "button" value= "Send"></input>
-//         </div>  
-//     </div>
-//   </div>
-
-//     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-//        <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
-//      <script src="./assets/js/app.js"></script>
-//   </body>
-// </html>

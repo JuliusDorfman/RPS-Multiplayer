@@ -15,5 +15,9 @@ img {
 }
 
 body {
-	background-color: lightblue
+	background-color: lightblue;
+}
+
+.verdict {
+	font-size: 4em;
 }
